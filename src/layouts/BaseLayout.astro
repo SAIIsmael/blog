@@ -1,0 +1,84 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import { site, siteTitle } from '../config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const fullTitle = siteTitle(title === 'Home' ? undefined : title);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <title>{fullTitle}</title>
+    <ViewTransitions />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <slot name="header" />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <script>
+      function initCardGlow() {
+        document.querySelectorAll('.card-glow').forEach((card) => {
+          if (card.dataset.glowBound === 'true') return;
+          card.dataset.glowBound = 'true';
+          card.addEventListener('mousemove', (e) => {
+            const rect = (card as HTMLElement).getBoundingClientRect();
+            const x = ((e as MouseEvent).clientX - rect.left) / rect.width * 100;
+            const y = ((e as MouseEvent).clientY - rect.top) / rect.height * 100;
+            (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
+            (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+          });
+        });
+      }
+
+      function initReveal() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+              }
+            });
+          },
+          { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
+        );
+
+        document.querySelectorAll('.reveal').forEach((el) => {
+          const node = el as HTMLElement;
+          if (node.dataset.revealBound === 'true') return;
+          node.dataset.revealBound = 'true';
+          observer.observe(node);
+
+          const rect = node.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            node.classList.add('visible');
+          }
+        });
+      }
+
+      function initPage() {
+        initCardGlow();
+        initReveal();
+      }
+
+      initPage();
+      document.addEventListener('astro:page-load', initPage);
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

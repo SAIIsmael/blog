@@ -1,0 +1,32 @@
+---
+import { site, getSocialLinks } from '../config/site';
+import SocialIcon from './SocialIcon.astro';
+
+const year = new Date().getFullYear();
+const socialLinks = getSocialLinks();
+---
+
+<footer class="mt-24 border-t border-ink-700/50">
+  <div class="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-6 py-10 sm:flex-row">
+    <p class="font-mono text-xs text-zinc-600">
+      <span class="text-terminal-dim">//</span> &copy; {year} {site.name}
+    </p>
+
+    {socialLinks.length > 0 && (
+      <div class="flex items-center gap-2">
+        {socialLinks.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+            aria-label={link.label}
+            title={link.label}
+            class="social-icon-link flex h-9 w-9 items-center justify-center rounded-md border border-transparent text-zinc-500 transition-all hover:border-ink-600 hover:bg-ink-900 hover:text-terminal"
+          >
+            <SocialIcon name={link.icon} />
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</footer>

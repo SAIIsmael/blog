@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { site } from '../../config/site';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = ['all', 'engineering', 'opinion', 'personal'] as const;
+---
+
+<BaseLayout title="Writing" description={site.description}>
+  <Header slot="header" />
+
+  <div class="mx-auto max-w-3xl px-6 pb-24 pt-16">
+    <header class="reveal mb-12">
+      <p class="prompt-line mb-3">ls ./writing/</p>
+      <h1 class="font-mono text-3xl text-zinc-100 sm:text-4xl">All posts</h1>
+      <p class="mt-4 max-w-lg text-zinc-500">
+        Field notes, strong takes, and the occasional detour.
+      </p>
+    </header>
+
+    <div class="reveal mb-8 flex flex-wrap gap-2" id="category-filters">
+      {categories.map((cat) => (
+        <button
+          type="button"
+          data-category={cat}
+          class:list={[
+            'category-btn rounded border px-3 py-1 font-mono text-xs transition-all duration-300',
+            cat === 'all'
+              ? 'border-terminal/40 bg-terminal/10 text-terminal-bright'
+              : 'border-ink-600 text-zinc-500 hover:border-ink-500 hover:text-zinc-300',
+          ]}
+        >
+          --{cat}
+        </button>
+      ))}
+    </div>
+
+    <div class="space-y-3" id="posts-list">
+      {posts.map((post, i) => (
+        <div data-post-category={post.data.category} class="post-item">
+          <PostCard post={post} index={i} />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll('.category-btn');
+  const items = document.querySelectorAll('.post-item');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+
+      buttons.forEach((b) => {
+        const isActive = b === btn;
+        b.classList.toggle('border-terminal/40', isActive);
+        b.classList.toggle('bg-terminal/10', isActive);
+        b.classList.toggle('text-terminal-bright', isActive);
+        b.classList.toggle('border-ink-600', !isActive);
+        b.classList.toggle('text-zinc-500', !isActive);
+      });
+
+      items.forEach((item) => {
+        const itemCategory = item.getAttribute('data-post-category');
+        const show = category === 'all' || itemCategory === category;
+        (item as HTMLElement).style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>

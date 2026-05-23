@@ -1,0 +1,46 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  index?: number;
+}
+
+const { post, index = 0 } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const delay = Math.min(index * 100, 500);
+const formattedDate = post.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article
+  class="card-glow reveal p-5 group"
+  style={`transition-delay: ${delay}ms`}
+>
+  <a href={`${base}blog/${post.id}/`} class="block space-y-3">
+    <div class="flex flex-wrap items-center gap-2">
+      <time datetime={post.data.date.toISOString()} class="font-mono text-xs text-zinc-600">
+        {formattedDate}
+      </time>
+      <span class:list={['tag', post.data.category === 'personal' && 'tag-personal']}>
+        {post.data.category}
+      </span>
+    </div>
+
+    <h2 class="font-mono text-lg text-zinc-100 transition-colors group-hover:text-terminal-bright">
+      {post.data.title}
+    </h2>
+
+    <p class="text-sm leading-relaxed text-zinc-500 line-clamp-2">
+      {post.data.description}
+    </p>
+
+    <span class="inline-flex items-center gap-2 font-mono text-xs text-terminal opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+      cat {post.id}.md
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </span>
+  </a>
+</article>

@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-950 text-zinc-300 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 70% 45% at 50% -10%, rgba(63, 185, 80, 0.07), transparent),
+      linear-gradient(to bottom, transparent, rgba(7, 11, 16, 0.4)),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    background-size: auto, auto, 128px 128px;
+  }
+
+  ::selection {
+    @apply bg-terminal/25 text-terminal-bright;
+  }
+}
+
+@layer components {
+  .prose-blog {
+    @apply prose prose-invert prose-zinc max-w-none
+      prose-headings:font-mono prose-headings:font-medium prose-headings:text-zinc-100
+      prose-h2:text-xl prose-h2:mt-14 prose-h2:mb-5 prose-h2:pb-2 prose-h2:border-b prose-h2:border-ink-700/60
+      prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3
+      prose-p:text-zinc-400 prose-p:leading-[1.8] prose-p:mb-5
+      prose-a:text-terminal prose-a:no-underline hover:prose-a:text-terminal-bright
+      prose-strong:text-zinc-200 prose-strong:font-medium
+      prose-code:text-terminal-bright prose-code:bg-ink-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+      prose-pre:bg-ink-900 prose-pre:border prose-pre:border-ink-700 prose-pre:rounded-lg
+      prose-blockquote:my-8 prose-blockquote:rounded-lg prose-blockquote:border prose-blockquote:border-terminal/20 prose-blockquote:bg-terminal/5 prose-blockquote:px-5 prose-blockquote:py-4 prose-blockquote:not-italic prose-blockquote:font-mono prose-blockquote:text-sm prose-blockquote:text-zinc-300 prose-blockquote:shadow-[inset_3px_0_0_0] prose-blockquote:shadow-terminal/50
+      prose-ul:my-6 prose-ul:list-none prose-ul:pl-0 prose-ul:space-y-2
+      prose-ol:my-6 prose-ol:pl-0
+      prose-li:text-zinc-400 prose-li:leading-relaxed prose-li:pl-0
+      prose-hr:my-12 prose-hr:border-ink-700
+      prose-em:text-zinc-300;
+  }
+
+  .prose-blog > p:first-of-type {
+    @apply text-base text-zinc-300 leading-[1.85];
+  }
+
+  .prose-blog ul > li {
+    @apply relative pl-5 font-mono text-sm;
+  }
+
+  .prose-blog ul > li::before {
+    content: '>';
+    @apply absolute left-0 text-terminal-dim;
+  }
+
+  .prose-blog hr + em,
+  .prose-blog hr + p em:only-child {
+    @apply block text-center font-mono text-sm not-italic text-zinc-500;
+  }
+
+  .link-underline {
+    @apply relative inline-block;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-px w-0 bg-terminal transition-all duration-300;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  .card-glow {
+    @apply relative overflow-hidden rounded-lg border border-ink-700/70 bg-ink-900/60 backdrop-blur-sm transition-all duration-500;
+  }
+
+  .card-glow::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500;
+    background: radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(63, 185, 80, 0.07), transparent 40%);
+  }
+
+  .card-glow:hover::before {
+    @apply opacity-100;
+  }
+
+  .card-glow:hover {
+    @apply border-terminal/25 shadow-lg shadow-terminal/5;
+  }
+
+  .tag {
+    @apply inline-block rounded border border-ink-600 bg-ink-800/80 px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider text-zinc-500;
+  }
+
+  .tag-personal {
+    @apply border-terminal-muted/50 text-terminal-dim;
+  }
+
+  .prompt-line {
+    @apply font-mono text-sm text-zinc-500;
+  }
+
+  .prompt-line::before {
+    content: '>';
+    @apply mr-2 text-terminal-dim;
+  }
+
+  .nav-link-active {
+    @apply relative;
+  }
+
+  .nav-link-active.link-underline::after {
+    @apply w-full bg-terminal-bright;
+  }
+
+  .nav-link-active::before {
+    content: '* ';
+    @apply text-terminal-dim;
+  }
+
+  @media (max-width: 767px) {
+    .nav-link-active::before {
+      content: none;
+    }
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  .hero-headline-muted {
+    @apply text-zinc-500;
+  }
+
+  .hero-headline-accent {
+    background: linear-gradient(
+      120deg,
+      #238636 0%,
+      #3fb950 35%,
+      #56d364 55%,
+      #6b7280 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+::view-transition-old(root) {
+  animation: 0.25s ease-out both fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 0.35s ease-out both fade-in-up;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

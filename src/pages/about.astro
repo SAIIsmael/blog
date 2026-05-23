@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPanel from '../components/TerminalPanel.astro';
+import { site, initials } from '../config/site';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+const avatarPath = join(process.cwd(), 'public', 'avatar.jpg');
+const hasAvatar = existsSync(avatarPath);
+const avatarSrc = `${import.meta.env.BASE_URL}avatar.jpg`;
+---
+
+<BaseLayout title="About" description={`About ${site.name}, ${site.role}. ${site.tagline}`}>
+  <Header slot="header" />
+
+  <div class="mx-auto max-w-3xl px-4 pb-24 pt-16 sm:px-6">
+    <div class="mb-12 flex flex-col gap-8 sm:flex-row sm:items-start">
+      <div class="shrink-0">
+        <div class="relative h-36 w-36 overflow-hidden rounded-lg border border-ink-700 sm:h-40 sm:w-40" style={`background-color: ${site.avatarBackground}`}>
+          {hasAvatar ? (
+            <img src={avatarSrc} alt={`Photo of ${site.name}`} class="h-full w-full object-cover" />
+          ) : (
+            <div class="flex h-full w-full flex-col items-center justify-center gap-2 p-4 text-center">
+              <span class="font-mono text-2xl text-terminal-dim">{initials(site.name)}</span>
+              <span class="font-mono text-[10px] leading-snug text-zinc-600">add public/avatar.jpg</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <header class="flex-1">
+        <p class="prompt-line mb-3">about --verbose</p>
+        <h1 class="font-mono text-3xl text-zinc-100 sm:text-4xl">{site.name}.</h1>
+        <p class="mt-3 font-mono text-sm text-terminal">{site.role}</p>
+      </header>
+    </div>
+
+    <div class="space-y-6 leading-relaxed text-zinc-400">
+      <p>{site.about.intro}</p>
+      <p>{site.about.background}</p>
+      <p>{site.about.writing}</p>
+    </div>
+
+    <TerminalPanel title="stack.conf" class="reveal mt-10">
+      <ul class="space-y-2 font-mono text-sm">
+        <li>
+          <span class="text-terminal-dim">role</span><span class="text-zinc-600">=</span>
+          <span class="text-zinc-300"> "{site.role}"</span>
+        </li>
+        <li>
+          <span class="text-terminal-dim">location</span><span class="text-zinc-600">=</span>
+          <span class="text-zinc-300"> "{site.stack.location}"</span>
+        </li>
+        <li>
+          <span class="text-terminal-dim">main</span><span class="text-zinc-600">=</span>
+          <span class="text-zinc-300"> [{site.stack.main.map((l) => `"${l}"`).join(', ')}]</span>
+        </li>
+        <li>
+          <span class="text-terminal-dim">sometimes</span><span class="text-zinc-600">=</span>
+          <span class="text-zinc-300"> [{site.stack.sometimes.map((l) => `"${l}"`).join(', ')}]</span>
+        </li>
+        <li>
+          <span class="text-terminal-dim">also</span><span class="text-zinc-600">=</span>
+          <span class="text-zinc-300"> [{site.stack.also.map((l) => `"${l}"`).join(', ')}]</span>
+        </li>
+      </ul>
+    </TerminalPanel>
+
+    <div class="reveal mt-10 rounded-lg border border-dashed border-ink-600 bg-ink-900/30 p-6">
+      <p class="font-mono text-xs text-zinc-600">// outside the editor</p>
+      {site.about.hobbies ? (
+        <p class="mt-3 text-zinc-400">{site.about.hobbies}</p>
+      ) : (
+        <p class="mt-3 text-sm italic text-zinc-600">
+          Nothing here yet. I'll add something when it feels worth sharing.
+        </p>
+      )}
+    </div>
+
+    <TerminalPanel title="contact.txt" class="reveal mt-10">
+      <ul class="space-y-3 font-mono text-sm">
+        <li>
+          <span class="text-zinc-600">email </span>
+          <a href={`mailto:${site.links.email}`} class="text-terminal hover:text-terminal-bright">{site.links.email}</a>
+        </li>
+        <li>
+          <span class="text-zinc-600">github </span>
+          <a href={site.links.github} target="_blank" rel="noopener noreferrer" class="text-terminal hover:text-terminal-bright">
+            @{site.links.github.replace('https://github.com/', '')}
+          </a>
+        </li>
+        <li>
+          <span class="text-zinc-600">linkedin </span>
+          <a href={site.links.linkedin} target="_blank" rel="noopener noreferrer" class="text-terminal hover:text-terminal-bright">
+            @{site.links.linkedin.replace(/^https:\/\/(www\.)?linkedin\.com\/in\//, '')}
+          </a>
+        </li>
+      </ul>
+      <p class="mt-6 text-sm text-zinc-500">{site.contactNote}</p>
+    </TerminalPanel>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,126 @@
+---
+import Logo from './Logo.astro';
+import { isNavActive, navHref } from '../config/site';
+
+const navLinks = [
+  { href: '/', label: 'home' },
+  { href: '/blog/', label: 'writing' },
+  { href: '/about/', label: 'about' },
+];
+
+const base = import.meta.env.BASE_URL;
+const pathname = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 border-b border-ink-700/50 bg-ink-950/85 backdrop-blur-xl">
+  <nav class="relative mx-auto max-w-3xl px-4 py-4 sm:px-6">
+    <div class="flex items-center justify-between gap-4">
+      <Logo />
+
+      <button
+        type="button"
+        id="nav-toggle"
+        class="flex h-9 w-9 items-center justify-center rounded border border-ink-600 font-mono text-sm text-zinc-400 transition-colors hover:border-terminal/40 hover:text-terminal md:hidden"
+        aria-expanded="false"
+        aria-controls="nav-menu-mobile"
+        aria-label="Open menu"
+      >
+        <span id="nav-toggle-icon">≡</span>
+      </button>
+
+      <ul id="nav-menu" class="hidden items-center gap-6 md:flex">
+        {navLinks.map((link) => {
+          const active = isNavActive(pathname, base, link.href);
+          return (
+            <li>
+              <a
+                href={navHref(base, link.href)}
+                class:list={[
+                  'nav-link link-underline font-mono text-xs transition-colors',
+                  active
+                    ? 'nav-link-active text-terminal-bright'
+                    : 'text-zinc-500 hover:text-terminal',
+                ]}
+                aria-current={active ? 'page' : undefined}
+              >
+                ./{link.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <ul
+      id="nav-menu-mobile"
+      class="nav-mobile-panel hidden border-t border-ink-700/50 pt-3 md:hidden"
+      aria-hidden="true"
+    >
+      {navLinks.map((link) => {
+        const active = isNavActive(pathname, base, link.href);
+        return (
+          <li>
+            <a
+              href={navHref(base, link.href)}
+              class:list={[
+                'nav-link block rounded px-2 py-2.5 font-mono text-sm transition-colors',
+                active
+                  ? 'nav-link-active border-l-2 border-terminal bg-terminal/10 pl-3 text-terminal-bright'
+                  : 'text-zinc-400 hover:bg-ink-800 hover:text-terminal',
+              ]}
+              aria-current={active ? 'page' : undefined}
+            >
+              ./{link.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  function initNav() {
+    const toggle = document.getElementById('nav-toggle');
+    const panel = document.getElementById('nav-menu-mobile');
+    const icon = document.getElementById('nav-toggle-icon');
+    if (!toggle || !panel || !icon) return;
+
+    const close = () => {
+      panel.classList.add('hidden');
+      panel.setAttribute('aria-hidden', 'true');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      icon.textContent = '≡';
+    };
+
+    const open = () => {
+      panel.classList.remove('hidden');
+      panel.setAttribute('aria-hidden', 'false');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      icon.textContent = '×';
+    };
+
+    if (toggle.dataset.bound !== 'true') {
+      toggle.dataset.bound = 'true';
+      toggle.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+        if (isOpen) close();
+        else open();
+      });
+    }
+
+    panel.querySelectorAll('.nav-link').forEach((link) => {
+      if (link.dataset.bound !== 'true') {
+        link.dataset.bound = 'true';
+        link.addEventListener('click', close);
+      }
+    });
+
+    close();
+  }
+
+  initNav();
+  document.addEventListener('astro:page-load', initNav);
+</script>

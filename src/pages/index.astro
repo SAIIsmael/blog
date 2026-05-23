@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import TerminalPanel from '../components/TerminalPanel.astro';
+import { site } from '../config/site';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const recentPosts = posts.slice(0, 3);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Home" description={site.description}>
+  <Header slot="header" />
+
+  <section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-grid bg-[length:24px_24px] opacity-40" aria-hidden="true" />
+    <div class="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-terminal/5 blur-3xl animate-pulse-glow" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-3xl px-6 pb-16 pt-20">
+      <TerminalPanel title="welcome.sh" class="animate-fade-in mb-10">
+        <p class="prompt-line mb-5 text-terminal-bright">whoami</p>
+        <p class="mt-2 font-mono text-xl text-zinc-100 sm:text-2xl">{site.name}</p>
+        <p class="mt-1 font-mono text-sm text-terminal">{site.role}</p>
+        <p class="mt-4 max-w-lg text-sm leading-relaxed text-zinc-400">
+          {site.tagline}
+        </p>
+      </TerminalPanel>
+
+      <h1 class="animate-fade-up mb-6 font-mono text-3xl leading-[1.15] tracking-tight sm:text-4xl lg:text-[2.75rem]">
+        <span class="hero-headline-muted block">Ideas worth</span>
+        <span class="hero-headline-accent block">committing to disk.</span>
+      </h1>
+      <p class="animate-fade-up animate-delay-200 mb-10 max-w-xl text-base leading-relaxed text-zinc-500 opacity-0" style="animation-fill-mode: forwards;">
+        {site.description}
+      </p>
+      <div class="animate-fade-up animate-delay-300 flex flex-wrap gap-3 opacity-0" style="animation-fill-mode: forwards;">
+        <a
+          href={`${base}blog/`}
+          class="inline-flex items-center gap-2 rounded border border-terminal/40 bg-terminal/10 px-5 py-2.5 font-mono text-sm text-terminal-bright transition-all hover:border-terminal hover:bg-terminal/20"
+        >
+          ls ./writing/
+        </a>
+        <a
+          href={`${base}about/`}
+          class="inline-flex items-center gap-2 rounded border border-ink-600 px-5 py-2.5 font-mono text-sm text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200"
+        >
+          cat about.md
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-6 pb-24">
+    <div class="reveal mb-8 flex items-end justify-between">
+      <div>
+        <p class="prompt-line mb-2">recent --limit 3</p>
+        <h2 class="font-mono text-xl text-zinc-100">Latest posts</h2>
+      </div>
+      <a href={`${base}blog/`} class="link-underline hidden font-mono text-xs text-zinc-500 hover:text-terminal sm:block">
+        view all →
+      </a>
+    </div>
+
+    <div class="space-y-3">
+      {recentPosts.map((post, i) => (
+        <PostCard post={post} index={i} />
+      ))}
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>

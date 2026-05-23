@@ -1,0 +1,20 @@
+---
+interface Props {
+  title?: string;
+  class?: string;
+}
+
+const { title = 'bash', class: className = '' } = Astro.props;
+---
+
+<div class:list={['terminal-panel overflow-hidden rounded-lg border border-ink-700/80 bg-ink-900/90', className]}>
+  <div class="flex items-center gap-2 border-b border-ink-700/80 bg-ink-800/60 px-4 py-2.5">
+    <span class="h-2.5 w-2.5 rounded-full bg-red-500/60" aria-hidden="true" />
+    <span class="h-2.5 w-2.5 rounded-full bg-yellow-500/60" aria-hidden="true" />
+    <span class="h-2.5 w-2.5 rounded-full bg-green-500/60" aria-hidden="true" />
+    <span class="ml-1 font-mono text-xs text-zinc-500">{title}</span>
+  </div>
+  <div class="p-5">
+    <slot />
+  </div>
+</div>
