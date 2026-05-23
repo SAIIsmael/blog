@@ -38,7 +38,7 @@ export const site = {
     github: 'https://github.com/SAIIsmael',
     linkedin: 'https://linkedin.com/in/saiismael',
     /** Add a URL when ready — empty string hides the icon */
-    instagram: '',
+    instagram: 'https://instagram.com/sai.il_',
     bluesky: '',
   },
 

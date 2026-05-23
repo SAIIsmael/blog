@@ -1,19 +1,26 @@
-# Personal Blog
+# blog
 
-A minimal, professional personal blog built with [Astro](https://astro.build). Static output, zero server — deploys to GitHub Pages on every push to `main`.
+Personal site and writing by [Ismael](https://SAIIsmael.github.io/blog/about/). Built with [Astro](https://astro.build), deployed to GitHub Pages.
 
-**Live site:** `https://YOUR_USERNAME.github.io/blog/` (after setup)
+**Live:** [https://SAIIsmael.github.io/blog/](https://SAIIsmael.github.io/blog/)
+
+## Stack
+
+- [Astro 5](https://astro.build) (static output)
+- [Tailwind CSS](https://tailwindcss.com)
+- Markdown content collections
+- GitHub Actions → GitHub Pages
 
 ## Features
 
-- Markdown posts with categories (`engineering`, `opinion`, `personal`)
-- Dark editorial design with gold accents, grain texture, and scroll animations
-- View Transitions for smooth page navigation
-- Category filtering on the writing page
-- Automatic sitemap generation
-- One-click deploy via GitHub Actions
+- Markdown posts with categories: `engineering`, `opinion`, `personal`
+- Terminal-inspired dark theme
+- Responsive nav, view transitions, scroll animations
+- Category filter on the writing page
+- Sitemap generation
+- Auto-deploy on push to `main`
 
-## Quick start
+## Local development
 
 ```bash
 npm install
@@ -24,73 +31,60 @@ npm run preview  # preview production build
 
 ## Writing a post
 
-Create a new `.md` file in `src/content/blog/`:
+Add a `.md` file in `src/content/blog/`:
 
 ```markdown
 ---
 title: 'Your post title'
-description: 'A one-line summary for cards and SEO.'
-date: 2025-05-23
+description: 'One-line summary for cards and SEO.'
+date: 2026-05-23
 category: engineering   # engineering | opinion | personal
-draft: false          # set true to hide from the site
+draft: false            # true = hidden from the site
 ---
 
-Your content here. Supports **markdown**, code blocks, lists, etc.
+Your content here.
 ```
 
-Commit and push — GitHub Actions rebuilds and deploys automatically.
-
-## Deploy to GitHub Pages
-
-### 1. Create the repository
-
-Push this project to a GitHub repo named `blog` (or any name).
-
-### 2. Configure Astro for your URL
-
-Edit `astro.config.mjs`:
-
-```js
-// Project site (username.github.io/blog)
-site: 'https://YOUR_USERNAME.github.io',
-base: '/blog/',
-
-// OR user site (username.github.io) — use repo name username.github.io
-site: 'https://YOUR_USERNAME.github.io',
-base: '/',
-```
-
-Replace `YOUR_USERNAME` everywhere (config, Header, Footer, About page).
-
-### 3. Enable GitHub Pages
-
-1. Go to **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**
-3. Push to `main` — the workflow in `.github/workflows/deploy.yml` handles the rest
-
-Your site will be live at `https://YOUR_USERNAME.github.io/blog/` (or your custom domain).
+Commit and push to `main`. The deploy workflow rebuilds the site automatically.
 
 ## Customize
 
+Most site copy and links live in one place:
+
 | What | Where |
 |------|-------|
-| Name, nav, social links | `src/components/Header.astro`, `Footer.astro` |
-| About page | `src/pages/about.astro` |
-| Colors & fonts | `tailwind.config.mjs`, `src/styles/global.css` |
-| Site title / meta | `src/layouts/BaseLayout.astro` |
+| Name, handle, tagline, about text, links | `src/config/site.ts` |
+| Colors, typography, prose styling | `tailwind.config.mjs`, `src/styles/global.css` |
+| Pages and layout | `src/pages/`, `src/layouts/` |
+| URL / base path | `astro.config.mjs` |
+
+Profile photo: `public/avatar.jpg` (square, ~400×400; `#0d1117` background blends best with the theme).
+
+## Deploy
+
+This repo is set up for GitHub Pages with **GitHub Actions** as the source.
+
+1. **Settings → Pages → Build and deployment → Source:** GitHub Actions
+2. Push to `main`
+
+Workflow: `.github/workflows/deploy.yml`
+
+If the repo name is not `blog`, update `base` in `astro.config.mjs` to match (`/blog/` for a repo named `blog`, `/` for `username.github.io`).
 
 ## Project structure
 
 ```
 src/
-├── content/blog/     ← your markdown posts
-├── components/       ← Header, Footer, PostCard
-├── layouts/          ← page shell
-├── pages/            ← routes (index, blog, about)
-└── styles/           ← global CSS
-public/               ← favicon, static assets
+├── config/site.ts      # site-wide copy and links
+├── content/blog/       # markdown posts
+├── components/         # Header, Footer, PostCard, etc.
+├── layouts/
+├── pages/
+└── styles/
+public/                 # avatar.jpg, favicon
+.github/workflows/      # deploy.yml
 ```
 
 ## License
 
-MIT — use it however you like.
+MIT — see [LICENSE](LICENSE). Blog posts are © Ismael unless stated otherwise.
